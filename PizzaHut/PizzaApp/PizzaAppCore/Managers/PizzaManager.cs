@@ -3,10 +3,11 @@ using System.Collections.Generic;
 
 using PizzaHut.PizzaApp.Data;
 using PizzaHut.PizzaApp.Data.Models;
+using PizzaHut.PizzaApp.Core.Managers.Interfaces;
 
 namespace PizzaHut.PizzaApp.Core.Managers
 {
-    public class PizzaManager
+    public class PizzaManager : IPizzaManager
     {
         private readonly IUnitOfWork _unitOfWork;
 
