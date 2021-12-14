@@ -1,18 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace PizzaApp
+using PizzaHut.PizzaApp.Core.Managers;
+using PizzaHut.PizzaApp.Core.Managers.Interfaces;
+using PizzaHut.PizzaApp.Data;
+
+namespace PizzaHut.PizzaApp.Presentation
 {
     public class Startup
     {
@@ -26,12 +23,25 @@ namespace PizzaApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzaApp", Version = "v1" });
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAnyOrigin",
+                    builder => builder
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin()
+                );
+            });
+
+            services.AddDbContext<PizzaAppDBContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IPizzaManager, PizzaManager>();
+            services.AddTransient<IIngredientManager, IngredientManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +53,7 @@ namespace PizzaApp
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaApp v1"));
             }
+            app.UseCors("AllowAnyOrigin");
 
             app.UseHttpsRedirection();
 
