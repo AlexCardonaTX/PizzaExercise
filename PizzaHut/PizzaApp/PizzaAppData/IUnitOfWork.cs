@@ -1,6 +1,6 @@
 ﻿using PizzaHut.PizzaApp.Data.Repositories.Interfaces;
 
-namespace PizzaAppData
+namespace PizzaHut.PizzaApp.Data
 {
     public interface IUnitOfWork
     {

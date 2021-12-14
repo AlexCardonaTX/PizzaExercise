@@ -8,9 +8,9 @@ namespace PizzaHut.PizzaApp.Data.Repositories.Interfaces
     public interface IPizzaRepository
     {
         IEnumerable<Pizza> GetAll();
-        public Pizza GetIngredient(Guid id);
-        public Pizza CreateIngredient(Pizza pizza);
-        public Pizza UpdateIngredient(Pizza pizza);
-        public Pizza DeleteIngredient(Pizza pizza);
+        public Pizza GetPizza(Guid id);
+        public Pizza CreatePizza(Pizza pizza);
+        public Pizza UpdatePizza(Pizza pizza);
+        public Pizza DeletePizza(Pizza pizza);
     }
 }
