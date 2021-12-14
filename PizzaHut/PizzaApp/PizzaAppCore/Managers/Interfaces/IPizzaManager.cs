@@ -6,10 +6,11 @@ namespace PizzaHut.PizzaApp.Core.Managers.Interfaces
 {
     public interface IPizzaManager
     {
-        public IEnumerable<Pizza> GetAll();
-        public Pizza GetPizza(string id);
-        public Pizza CreatePizza(Pizza pizza);
-        public Pizza UpdatePizza(Pizza newPizza, string id);
-        public Pizza DeletePizza(string id);
+        IEnumerable<Pizza> GetAll();
+        Pizza GetPizza(string id);
+        Pizza CreatePizza(Pizza pizza);
+        Pizza UpdatePizza(Pizza newPizza, string id);
+        Pizza DeletePizza(string id);
+        Pizza AddIngredient(string pizzaId, string ingredientId);
     }
 }
