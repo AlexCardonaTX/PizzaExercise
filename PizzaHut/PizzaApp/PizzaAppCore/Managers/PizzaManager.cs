@@ -62,5 +62,28 @@ namespace PizzaHut.PizzaApp.Core.Managers
             }
             return pizza;
         }
+
+        public Pizza AddIngredient(string pizzaId, string ingredientId)
+        {
+            Guid pizzaGuid = Guid.Parse(pizzaId);
+            Guid ingredientGuid = Guid.Parse(ingredientId);
+            Pizza pizza = _unitOfWork.PizzaRepository.GetPizza(pizzaGuid);
+            Ingredient ingredient = _unitOfWork.IngredientRepository.GetIngredient(ingredientGuid);
+            if (pizza != null && ingredient != null)
+            {
+                PizzaIngredient pizzaIngredient = new()
+                {
+                    IngredientId = ingredientGuid,
+                    PizzaId = pizzaGuid
+                };
+                pizza.PizzaIngredients.Add(pizzaIngredient);
+                _unitOfWork.PizzaRepository.UpdatePizza(pizza);
+                //_unitOfWork.PizzaIngredientRepository.CreatePizzaIngredient(pizzaIngredient);
+                _unitOfWork.Save();
+                return pizza;
+            }
+
+            return null;
+        }
     }
 }

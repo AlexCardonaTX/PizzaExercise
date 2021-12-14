@@ -7,6 +7,6 @@ namespace PizzaHut.PizzaApp.Data.Models
     {
         public Guid PizzaId { get; set; }
         public string PizzaName { get; set; }
-        public IEnumerable<PizzaIngredient> PizzaIngredients { get; set; }
+        public ICollection<PizzaIngredient> PizzaIngredients { get; set; }
     }
 }
