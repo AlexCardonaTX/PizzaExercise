@@ -3,7 +3,7 @@ using PizzaHut.PizzaApp.Data.Repositories.Interfaces;
 
 namespace PizzaHut.PizzaApp.Data
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly PizzaAppDBContext _pizzaAppDBContext;
         private readonly IPizzaRepository _pizzaRepository;
