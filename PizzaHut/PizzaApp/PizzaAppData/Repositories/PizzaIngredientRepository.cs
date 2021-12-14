@@ -20,23 +20,23 @@ namespace PizzaHut.PizzaApp.Data.Repositories
             return _pizzaAppDBContext.PizzaIngredient;
         }
 
-        public PizzaIngredient GetIngredient(Guid id)
+        public PizzaIngredient GetPizzaIngredient(Guid id)
         {
             return _pizzaAppDBContext.PizzaIngredient.Find(id);
         }
 
-        public PizzaIngredient CreateIngredient(PizzaIngredient pizzaIngredient)
+        public PizzaIngredient CreatePizzaIngredient(PizzaIngredient pizzaIngredient)
         {
             return _pizzaAppDBContext.PizzaIngredient.Add(pizzaIngredient).Entity;
         }
 
-        public PizzaIngredient UpdateIngredient(PizzaIngredient pizzaIngredient)
+        public PizzaIngredient UpdatePizzaIngredient(PizzaIngredient pizzaIngredient)
         {
             _pizzaAppDBContext.Entry(pizzaIngredient).State = EntityState.Modified;
             return pizzaIngredient;
         }
 
-        public PizzaIngredient DeleteIngredient(PizzaIngredient pizzaIngredient)
+        public PizzaIngredient DeletePizzaIngredient(PizzaIngredient pizzaIngredient)
         {
             _pizzaAppDBContext.PizzaIngredient.Remove(pizzaIngredient);
             return pizzaIngredient;
