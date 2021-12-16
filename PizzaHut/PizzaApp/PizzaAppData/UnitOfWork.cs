@@ -41,7 +41,8 @@ namespace PizzaHut.PizzaApp.Data
                 BeginTransaction();
                 _pizzaAppDBContext.SaveChanges();
                 CommitTransaction();
-            } catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 throw new DataException(ex.Message, 500);
             }
