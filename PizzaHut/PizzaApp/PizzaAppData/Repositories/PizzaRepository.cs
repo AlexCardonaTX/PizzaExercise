@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 using PizzaHut.PizzaApp.Data.Models;
@@ -17,12 +18,18 @@ namespace PizzaHut.PizzaApp.Data.Repositories
 
         public IEnumerable<Pizza> GetAll()
         {
-            return _pizzaAppDBContext.Pizza;
+            return _pizzaAppDBContext.Pizza
+                    .Include(p => p.PizzaIngredients)
+                    .ThenInclude(pi => pi.Ingredient);
         }
 
         public Pizza GetPizza(Guid id)
         {
-            return _pizzaAppDBContext.Pizza.Find(id);
+            return _pizzaAppDBContext.Pizza
+                    .Include(p => p.PizzaIngredients)
+                    .ThenInclude(pi => pi.Ingredient)
+                    .Where(p => p.PizzaId == id)
+                    .FirstOrDefault();
         }
 
         public Pizza CreatePizza(Pizza pizza)
