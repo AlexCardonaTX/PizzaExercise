@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using PizzaHut.PizzaApp.Core.Managers;
 using PizzaHut.PizzaApp.Core.Managers.Interfaces;
 using PizzaHut.PizzaApp.Data;
+using PizzaHut.PizzaApp.Presentation.Middleware;
 
 namespace PizzaHut.PizzaApp.Presentation
 {
@@ -54,6 +55,8 @@ namespace PizzaHut.PizzaApp.Presentation
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaApp v1"));
             }
             app.UseCors("AllowAnyOrigin");
+
+            app.UseGlobalExceptionHandler();
 
             app.UseHttpsRedirection();
 

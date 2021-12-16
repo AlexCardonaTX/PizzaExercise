@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 
 using PizzaHut.PizzaApp.Core.Managers.Interfaces;
 using PizzaHut.PizzaApp.Data.Models;
+using PizzaHut.PizzaApp.Presentation.Middleware;
 
 namespace PizzaHut.PizzaApp.Presentation.Controllers
 {
@@ -20,31 +22,36 @@ namespace PizzaHut.PizzaApp.Presentation.Controllers
         [HttpGet]
         public IActionResult GetIngredients()
         {
-            return Ok(_ingredientManager.GetAll());
+            var response = new MiddlewareResponse<IEnumerable<Ingredient>>(_ingredientManager.GetAll());
+            return (response.Error.Message == null) ? Ok(response.Data) : Ok(response);
         }
 
         [HttpGet("{ingredientId}")]
         public IActionResult GetIngredient([FromRoute, Required] string ingredientId)
         {
-            return Ok(_ingredientManager.GetIngredient(ingredientId));
+            var response = new MiddlewareResponse<Ingredient>(_ingredientManager.GetIngredient(ingredientId));
+            return (response.Error.Message == null) ? Ok(response.Data) : Ok(response);
         }
 
         [HttpPost]
         public IActionResult CreateIngredient([FromBody, Required] Ingredient ingredient)
         {
-            return Ok(_ingredientManager.CreateIngredient(ingredient));
+            var response = new MiddlewareResponse<Ingredient>(_ingredientManager.CreateIngredient(ingredient));
+            return (response.Error.Message == null) ? Ok(response.Data) : Ok(response);
         }
 
         [HttpPut("{ingredientId}")]
         public IActionResult UpdateIngredient([FromBody, Required] Ingredient ingredient, [FromHeader] string ingredientId)
         {
-            return Ok(_ingredientManager.UpdateIngredient(ingredient, ingredientId));
+            var response = new MiddlewareResponse<Ingredient>(_ingredientManager.UpdateIngredient(ingredient, ingredientId));
+            return (response.Error.Message == null) ? Ok(response.Data) : Ok(response);
         }
 
         [HttpDelete("{ingredientId}")]
         public IActionResult DeleteIngredient([FromRoute, Required] string ingredientId)
         {
-            return Ok(_ingredientManager.DeleteIngredient(ingredientId));
+            var response = new MiddlewareResponse<Ingredient>(_ingredientManager.DeleteIngredient(ingredientId));
+            return (response.Error.Message == null) ? Ok(response.Data) : Ok(response);
         }
     }
 }
