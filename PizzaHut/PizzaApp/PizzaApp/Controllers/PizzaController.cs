@@ -47,11 +47,11 @@ namespace PizzaHut.PizzaApp.Presentation.Controllers
             return Ok(_pizzaManager.DeletePizza(pizzaId));
         }
 
-        [HttpPost]
-        [Route("{pizzaId}/add-ingredient/{ingredientId}")]
-        public IActionResult AddIngredient(string pizzaId, string ingredientId)
+        [HttpPut]
+        [Route("{pizzaId}/ingredients")]
+        public IActionResult UpdateIngredients(string pizzaId, [FromBody, Required] string[] ingredientsIds)
         {
-            return Ok(_pizzaManager.AddIngredient(pizzaId, ingredientId));
+            return Ok(_pizzaManager.UpdateIngredients(pizzaId, ingredientsIds));
         }
     }
 }

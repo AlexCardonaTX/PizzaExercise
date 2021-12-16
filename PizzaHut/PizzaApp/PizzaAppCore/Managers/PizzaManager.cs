@@ -63,27 +63,71 @@ namespace PizzaHut.PizzaApp.Core.Managers
             return pizza;
         }
 
-        public Pizza AddIngredient(string pizzaId, string ingredientId)
+        public Pizza UpdateIngredients(string pizzaId, string[] ingredientsIds)
         {
             Guid pizzaGuid = Guid.Parse(pizzaId);
-            Guid ingredientGuid = Guid.Parse(ingredientId);
             Pizza pizza = _unitOfWork.PizzaRepository.GetPizza(pizzaGuid);
+            if (pizza != null)
+            {
+                foreach (string ingredientId in ingredientsIds)
+                {
+                    bool found = false;
+                    Guid ingredientGuid = Guid.Parse(ingredientId);
+                    foreach (PizzaIngredient pizzaIngredient in pizza.PizzaIngredients)
+                    {
+                        if (pizzaIngredient.IngredientId == ingredientGuid)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        AddIngredient(pizza, ingredientGuid);
+                    }
+                }
+
+                foreach (PizzaIngredient pizzaIngredient in pizza.PizzaIngredients)
+                {
+                    bool found = false;
+                    foreach (string ingredientId in ingredientsIds)
+                    {
+                        Guid ingredientGuid = Guid.Parse(ingredientId);
+                        if (pizzaIngredient.IngredientId == ingredientGuid)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        RemoveIngredient(pizza, pizzaIngredient);
+                    }
+                }
+
+            }
+            _unitOfWork.PizzaRepository.UpdatePizza(pizza);
+            _unitOfWork.Save();
+            return pizza;
+        }
+
+        private void AddIngredient(Pizza pizza, Guid ingredientGuid)
+        {
             Ingredient ingredient = _unitOfWork.IngredientRepository.GetIngredient(ingredientGuid);
-            if (pizza != null && ingredient != null)
+            if (ingredient != null)
             {
                 PizzaIngredient pizzaIngredient = new()
                 {
                     IngredientId = ingredientGuid,
-                    PizzaId = pizzaGuid
+                    PizzaId = (Guid)pizza.PizzaId
                 };
                 pizza.PizzaIngredients.Add(pizzaIngredient);
-                _unitOfWork.PizzaRepository.UpdatePizza(pizza);
-                //_unitOfWork.PizzaIngredientRepository.CreatePizzaIngredient(pizzaIngredient);
-                _unitOfWork.Save();
-                return pizza;
             }
+        }
 
-            return null;
+        private void RemoveIngredient(Pizza pizza, PizzaIngredient pizzaIngredient)
+        {
+            pizza.PizzaIngredients.Remove(pizzaIngredient);
         }
     }
 }

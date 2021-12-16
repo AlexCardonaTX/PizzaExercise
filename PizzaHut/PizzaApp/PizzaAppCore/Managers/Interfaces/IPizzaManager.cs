@@ -11,6 +11,6 @@ namespace PizzaHut.PizzaApp.Core.Managers.Interfaces
         Pizza CreatePizza(Pizza pizza);
         Pizza UpdatePizza(Pizza newPizza, string id);
         Pizza DeletePizza(string id);
-        Pizza AddIngredient(string pizzaId, string ingredientId);
+        Pizza UpdateIngredients(string pizzaId, string[] ingredientsIds);
     }
 }
