@@ -28,10 +28,6 @@ namespace PizzaHut.PizzaApp.Presentation.Middleware
             {
                 await _next(context);
             }
-            catch (Exception ex) when (ex is ArgumentNullException)
-            {
-                await HandleExceptionAsync(context, ex);
-            }
             catch (Exception ex)
             {
                 await HandleExceptionAsync(context, ex);
@@ -42,15 +38,13 @@ namespace PizzaHut.PizzaApp.Presentation.Middleware
         {
             var ErrorResponse = new MiddlewareResponse<string>(null);
 
-            if (ex is DataException)
+            if (ex is DataException dataException)
             {
-                DataException dataException = (DataException)ex;
                 ErrorResponse.Status = dataException.HttpResponse;
                 ErrorResponse.Error.Message = $"Data Error{Environment.NewLine}Message: {ex.Message}{Environment.NewLine}";
             }
-            else if (ex is CoreException)
+            else if (ex is CoreException coreException)
             {
-                CoreException coreException = (CoreException)ex;
                 ErrorResponse.Status = coreException.HttpResponse;
                 ErrorResponse.Error.Message = $"Business Logic Error{Environment.NewLine}Message: {ex.Message}{Environment.NewLine}";
             }
@@ -58,7 +52,8 @@ namespace PizzaHut.PizzaApp.Presentation.Middleware
             {
                 ErrorResponse.Status = (int)HttpStatusCode.InternalServerError;
                 ErrorResponse.Error.Message = $"Unknown Error{Environment.NewLine}Message: {ex.Message}{Environment.NewLine}";
-                //Log.Error(ex, $"{ErrorResponse.Error.Message}{Environment.NewLine} Stack trace: {Environment.NewLine}");
+                //Log Error
+                Console.WriteLine($"{ErrorResponse.Error.Message}{Environment.NewLine} Stack trace: {Environment.NewLine}{ex.StackTrace}");
             }
 
             context.Response.ContentType = _jsonContentType;

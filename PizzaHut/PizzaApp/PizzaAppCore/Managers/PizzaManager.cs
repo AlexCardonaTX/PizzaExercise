@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using PizzaHut.PizzaApp.Data;
 using PizzaHut.PizzaApp.Data.Models;
 using PizzaHut.PizzaApp.Core.Managers.Interfaces;
+using PizzaHut.PizzaApp.Data.Exceptions;
+using PizzaHut.PizzaApp.Core.Exceptions;
 
 namespace PizzaHut.PizzaApp.Core.Managers
 {
@@ -23,8 +25,15 @@ namespace PizzaHut.PizzaApp.Core.Managers
 
         public Pizza GetPizza(string id)
         {
-            Guid guid = Guid.Parse(id);
-            return _unitOfWork.PizzaRepository.GetPizza(guid);
+            try
+            {
+                Guid guid = Guid.Parse(id);
+                return _unitOfWork.PizzaRepository.GetPizza(guid);
+            }
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+            }
         }
 
         public Pizza CreatePizza(Pizza pizza)
@@ -42,25 +51,43 @@ namespace PizzaHut.PizzaApp.Core.Managers
 
         public Pizza UpdatePizza(Pizza newPizza, string id)
         {
-            Pizza pizza = GetPizza(id);
-            if (pizza != null)
+            try
             {
-                pizza.PizzaName = newPizza.PizzaName;
+                Pizza pizza = GetPizza(id);
+                if (pizza != null)
+                {
+                    pizza.PizzaName = newPizza.PizzaName;
+                }
+                _unitOfWork.PizzaRepository.UpdatePizza(pizza);
+                _unitOfWork.Save();
+                return pizza;
             }
-            _unitOfWork.PizzaRepository.UpdatePizza(pizza);
-            _unitOfWork.Save();
-            return pizza;
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+            }
         }
 
         public Pizza DeletePizza(string id)
         {
-            Pizza pizza = GetPizza(id);
-            if (pizza != null)
+            try
             {
-                _unitOfWork.PizzaRepository.DeletePizza(pizza);
-                _unitOfWork.Save();
+                Pizza pizza = GetPizza(id);
+                if (pizza != null)
+                {
+                    _unitOfWork.PizzaRepository.DeletePizza(pizza);
+                    _unitOfWork.Save();
+                }
+                return pizza;
             }
-            return pizza;
+            catch (DataException)
+            {
+                throw new DataException("The entity has one or more relations in DB", 405);
+            }
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+            }
         }
 
         public Pizza UpdateIngredients(string pizzaId, string[] ingredientsIds)
