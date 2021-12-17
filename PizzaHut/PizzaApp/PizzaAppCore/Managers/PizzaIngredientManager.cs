@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 
 using PizzaHut.PizzaApp.Data;
 using PizzaHut.PizzaApp.Data.Models;
@@ -32,7 +33,7 @@ namespace PizzaHut.PizzaApp.Core.Managers
             } 
             catch (FormatException)
             {
-                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", HttpStatusCode.BadRequest);
             }
 
         }
@@ -55,12 +56,12 @@ namespace PizzaHut.PizzaApp.Core.Managers
             }
             catch (DataException)
             {
-                throw new DataException("The entity has one or more relations in DB", 405);
+                throw new DataException("The entity has one or more relations in DB", HttpStatusCode.Conflict);
             } 
             
             catch (FormatException)
             {
-                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", HttpStatusCode.BadRequest);
             }
         }
     }
