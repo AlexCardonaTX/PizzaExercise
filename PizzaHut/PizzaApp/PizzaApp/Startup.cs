@@ -4,10 +4,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
+using System.IO;
+using System.Reflection;
 
 using PizzaHut.PizzaApp.Core.Managers;
 using PizzaHut.PizzaApp.Core.Managers.Interfaces;
 using PizzaHut.PizzaApp.Data;
+using PizzaHut.PizzaApp.Presentation.Middleware;
 
 namespace PizzaHut.PizzaApp.Presentation
 {
@@ -27,6 +31,9 @@ namespace PizzaHut.PizzaApp.Presentation
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PizzaApp", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
             services.AddCors(options =>
             {
@@ -54,6 +61,8 @@ namespace PizzaHut.PizzaApp.Presentation
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PizzaApp v1"));
             }
             app.UseCors("AllowAnyOrigin");
+
+            app.UseGlobalExceptionHandler();
 
             app.UseHttpsRedirection();
 

@@ -1,5 +1,7 @@
-﻿using PizzaHut.PizzaApp.Data.Repositories;
+﻿using PizzaHut.PizzaApp.Data.Exceptions;
+using PizzaHut.PizzaApp.Data.Repositories;
 using PizzaHut.PizzaApp.Data.Repositories.Interfaces;
+using System;
 
 namespace PizzaHut.PizzaApp.Data
 {
@@ -34,9 +36,17 @@ namespace PizzaHut.PizzaApp.Data
 
         public void Save()
         {
-            BeginTransaction();
-            _pizzaAppDBContext.SaveChanges();
-            CommitTransaction();
+            try
+            {
+                BeginTransaction();
+                _pizzaAppDBContext.SaveChanges();
+                CommitTransaction();
+            }
+            catch(Exception ex)
+            {
+                throw new DataException(ex.Message, 500);
+            }
+
         }
 
         public IPizzaRepository PizzaRepository

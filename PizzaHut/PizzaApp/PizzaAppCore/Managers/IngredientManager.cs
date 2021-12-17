@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using PizzaHut.PizzaApp.Data;
 using PizzaHut.PizzaApp.Data.Models;
 using PizzaHut.PizzaApp.Core.Managers.Interfaces;
+using PizzaHut.PizzaApp.Data.Exceptions;
+using PizzaHut.PizzaApp.Core.Exceptions;
 
 namespace PizzaHut.PizzaApp.Core.Managers
 {
@@ -23,8 +25,15 @@ namespace PizzaHut.PizzaApp.Core.Managers
 
         public Ingredient GetIngredient(string id)
         {
-            Guid guid = Guid.Parse(id);
-            return _unitOfWork.IngredientRepository.GetIngredient(guid);
+            try
+            {
+                Guid guid = Guid.Parse(id);
+                return _unitOfWork.IngredientRepository.GetIngredient(guid);
+            } 
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
+            }
         }
 
         public Ingredient CreateIngredient(Ingredient ingredient)
@@ -42,25 +51,45 @@ namespace PizzaHut.PizzaApp.Core.Managers
 
         public Ingredient UpdateIngredient(Ingredient newIngredient, string id)
         {
-            Ingredient ingredient = GetIngredient(id);
-            if (ingredient != null)
+            try
             {
-                ingredient.IngredientName = newIngredient.IngredientName;
+                Ingredient ingredient = GetIngredient(id);
+                if (ingredient != null)
+                {
+                    ingredient.IngredientName = newIngredient.IngredientName;
+                }
+                _unitOfWork.IngredientRepository.UpdateIngredient(ingredient);
+                _unitOfWork.Save();
+                return ingredient;
+            } 
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
             }
-            _unitOfWork.IngredientRepository.UpdateIngredient(ingredient);
-            _unitOfWork.Save();
-            return ingredient;
+
         }
 
         public Ingredient DeleteIngredient(string id)
         {
-            Ingredient ingredient = GetIngredient(id);
-            if (ingredient != null)
+            try
             {
-                _unitOfWork.IngredientRepository.DeleteIngredient(ingredient);
-                _unitOfWork.Save();
+                Ingredient ingredient = GetIngredient(id);
+                if (ingredient != null)
+                {
+                    _unitOfWork.IngredientRepository.DeleteIngredient(ingredient);
+                    _unitOfWork.Save();
+                }
+                return ingredient;
+            } 
+            catch (DataException)
+            {
+                throw new DataException("The entity has one or more relations in DB", 405);
+            } 
+            catch (FormatException)
+            {
+                throw new CoreException("Format error, Guid should contain 32 digits with 4 dashes", 400);
             }
-            return ingredient;
+
         }
     }
 }
