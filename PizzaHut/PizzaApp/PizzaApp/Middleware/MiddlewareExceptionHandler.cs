@@ -40,12 +40,12 @@ namespace PizzaHut.PizzaApp.Presentation.Middleware
 
             if (ex is DataException dataException)
             {
-                ErrorResponse.Status = dataException.HttpResponse;
+                ErrorResponse.Status = (int)dataException.HttpResponse;
                 ErrorResponse.Error.Message = $"Data Error{Environment.NewLine}Message: {ex.Message}{Environment.NewLine}";
             }
             else if (ex is CoreException coreException)
             {
-                ErrorResponse.Status = coreException.HttpResponse;
+                ErrorResponse.Status = (int)coreException.HttpResponse;
                 ErrorResponse.Error.Message = $"Business Logic Error{Environment.NewLine}Message: {ex.Message}{Environment.NewLine}";
             }
             else

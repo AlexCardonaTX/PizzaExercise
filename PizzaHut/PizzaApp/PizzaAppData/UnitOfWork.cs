@@ -2,6 +2,7 @@
 using PizzaHut.PizzaApp.Data.Repositories;
 using PizzaHut.PizzaApp.Data.Repositories.Interfaces;
 using System;
+using System.Net;
 
 namespace PizzaHut.PizzaApp.Data
 {
@@ -44,7 +45,7 @@ namespace PizzaHut.PizzaApp.Data
             }
             catch(Exception ex)
             {
-                throw new DataException(ex.Message, 500);
+                throw new DataException(ex.Message, HttpStatusCode.InternalServerError);
             }
 
         }
